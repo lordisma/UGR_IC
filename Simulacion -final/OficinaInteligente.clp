@@ -288,7 +288,7 @@
   ;se lanza un mensaje y se reinicia el Tiempo
   ?f <- (TimeUser ?tipotramite ?n ?timpofin)
   (HoraActualizada ?t)
-  (MaximoEsperaParaSerAtendido ?max)
+  (MaximoEsperaParaSerAtendido ?tipotramite ?max)
   (test (> ?t ?timpofin ))
 
   =>
@@ -573,3 +573,56 @@
   (printout t "En el pasillo se han apagado las luces" crlf)
   (retract ?f ?g)
 )
+
+(defrule EncenderBano
+  ?f <- (Luz ?aseo OFF)
+  ?g <- (Sensor_presencia ?aseo)
+  (test (or (eq ?aseo AseoHombres) (eq ?aseo AseoMujeres)))
+
+  =>
+
+  (retract ?f ?g)
+  (assert (Luz ?aseo ON)
+          (NPerson ?aseo 1))
+  (printout t "En el " ?aseo " se han encendido las luces" crlf)
+  )
+
+  (defrule AmbiguoBano
+    (Luz ?aseo ON)
+    ?g <- (Sensor_puerta ?aseo)
+    (or (eq ?aseo AseoHombres) (eq ?aseo AseoMujeres))
+    (HoraActualizada ?t)
+    =>
+    (retract ?g)
+    (assert (Ambiguo ?aseo (+ ?t 2)))
+  )
+
+  (defrule DecrementaBano
+    ?g <- (Ambiguo ?aseo ?time)
+    (Sensor_presencia Pasillo)
+    ?f <- (NPerson ?aseo ?n)
+    =>
+    (retract ?g ?f)
+    (assert (NPerson ?aseo (- ?n 1)))
+  )
+
+  (defrule IncrementaBano
+    ?f <- (Ambiguo ?aseo ?time)
+    (HoraActualizada ?t)
+    ?g <-(NPerson ?aseo ?n)
+    (test (< ?time ?t))
+    =>
+    (retract ?f ?g)
+    (assert (NPerson ?aseo (+ ?n 1)))
+  )
+
+  (defrule ApagarBano
+    (declare (salience 20))
+    ?f <- (Luz ?aseo ON)
+    ?g <- (NPerson ?aseo ?n)
+    (test (<= ?n 0))
+    =>
+    (retract ?f ?g)
+    (assert (Luz ?aseo OFF))
+    (printout t "En el " ?aseo " se han apagado las luces" crlf)
+  )

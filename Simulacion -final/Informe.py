@@ -44,6 +44,8 @@ if __name__ == "__main__":
     Tramites = []
     TiempoEspera = []
     Empleados = []
+    OnTime = []
+    Retarder = []
     for line in f:
         if line.find("TIMETRAMITADO") >= 0:
             Tramites.append(line)
@@ -51,6 +53,10 @@ if __name__ == "__main__":
             TiempoEspera.append(line)
         elif line.find("Tramitado") >= 0:
             Empleados.append(line)
+        elif line.find("ONTIME") >= 0:
+            OnTime.append(line)
+        elif line.find("RETRASADO") >= 0:
+            Retarder.append(line)
     print("Se han completado un numero de {} tramites".format(len(Tramites)))
     print()
     print( "              RESULTADOS DE LA TRAMITACION                 ")
@@ -69,6 +75,61 @@ if __name__ == "__main__":
     print()
 
     IdG1 = IdG2 = IdG3 = IdG4 = IdG5 = IdE1 = IdE2 = np.array([])
+
+    result = [0,0,0,0,0,0,0]
+
+    for factOn in  OnTime:
+        factOn = factOn[1:len(factOn)-2]
+        subresultOn = factOn.split()
+
+        if subresultOn[1] == 'G1':
+            result[0] = 1
+
+        if subresultOn[1] == 'G2':
+            result[1] = 1
+
+        if subresultOn[1] == 'G3':
+            result[2] = 1
+
+        if subresultOn[1] == 'G4':
+            result[3] = 1
+
+        if subresultOn[1] == 'G5':
+            result[4] = 1
+
+        if subresultOn[1] == 'E1':
+            result[5] = 1
+
+        if subresultOn[1] == 'E2':
+            result[6] = 1
+
+    for factRetar in Retarder:
+        factRetar = factRetar[1:len(factRetar)-2]
+        subresultRetar = factRetar.split()
+
+        if subresultRetar[1] == 'G1':
+            result[0] = 2
+
+        if subresultRetar[1] == 'G2':
+            result[1] = 2
+
+        if subresultRetar[1] == 'G3':
+            result[2] = 2
+
+        if subresultRetar[1] == 'G4':
+            result[3] = 2
+
+        if subresultRetar[1] == 'G5':
+            result[4] = 2
+
+        if subresultRetar[1] == 'E1':
+            result[5] = 2
+
+        if subresultRetar[1] == 'E2':
+            result[6] = 2
+
+
+
 
     for fact in Empleados:
         fact = fact[1:len(fact)-2]
@@ -92,51 +153,87 @@ if __name__ == "__main__":
     IdTE = Id[np.where(Tipo == 'TE')]
 
     print("El empleado G1:")
-    print(" Nº Tramites: {}".format(len(IdG1)))
-    indexs = np.where(np.isin(IdTG, IdG1))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdG1) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdG1) ))
+    if result[0] != 0:
+        print(" Nº Tramites: {}".format(len(IdG1)))
+        indexs = np.where(np.isin(IdTG, IdG1))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdG1) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdG1) ))
+        if result[0] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
     print("El empleado G2:")
-    print(" Nº Tramites: {}".format(len(IdG2)))
-    indexs = np.where(np.isin(IdTG, IdG2))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdG2) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdG2) ))
+    if result[1] != 0:
+        print(" Nº Tramites: {}".format(len(IdG2)))
+        indexs = np.where(np.isin(IdTG, IdG2))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdG2) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdG2) ))
+        if result[1] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
     print("El empleado G3:")
-    print(" Nº Tramites: {}".format(len(IdG3)))
-    indexs = np.where(np.isin(IdTG, IdG3))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdG3) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdG3) ))
+    if result[2] != 0:
+        print(" Nº Tramites: {}".format(len(IdG3)))
+        indexs = np.where(np.isin(IdTG, IdG3))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdG3) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdG3) ))
+        if result[2] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
     print("El empleado G4:")
-    print(" Nº Tramites: {}".format(len(IdG4)))
-    indexs = np.where(np.isin(IdTG, IdG4))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdG4) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdG4) ))
+    if result[3] != 0:
+        print(" Nº Tramites: {}".format(len(IdG4)))
+        indexs = np.where(np.isin(IdTG, IdG4))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdG4) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdG4) ))
+        if result[3] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
+
     print("El empleado G5:")
-    print(" Nº Tramites: {}".format(len(IdG5)))
-    indexs = np.where(np.isin(IdTG, IdG5))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdG5) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdG5) ))
+    if result[4] != 0:
+        print(" Nº Tramites: {}".format(len(IdG5)))
+        indexs = np.where(np.isin(IdTG, IdG5))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdG5) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdG5) ))
+        if result[4] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
     print("El empleado E1:")
-    print(" Nº Tramites: {}".format(len(IdE1)))
-    indexs = np.where(np.isin(IdTE, IdE1))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdE1) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdE1) ))
+    if result[5] != 0:
+        print(" Nº Tramites: {}".format(len(IdE1)))
+        indexs = np.where(np.isin(IdTE, IdE1))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdE1) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdE1) ))
+        if result[5] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
     print("El empleado E2:")
-    print(" Nº Tramites: {}".format(len(IdE2)))
-    indexs = np.where(np.isin(IdTE, IdE2))
-    Tiempo = sum(Fin[indexs]-Inicio[indexs])
-    print(" Tiempo Atendiendo: {}".format( Tiempo ))
-    if len(IdE2) > 0:
-        print(" Tiempo Medio: {}".format( Tiempo/len(IdE2) ))
+    if result[6] != 0:
+        print(" Nº Tramites: {}".format(len(IdE2)))
+        indexs = np.where(np.isin(IdTE, IdE2))
+        Tiempo = sum(Fin[indexs]-Inicio[indexs])
+        print(" Tiempo Atendiendo: {}".format( Tiempo ))
+        if len(IdE2) > 0:
+            print(" Tiempo Medio: {}".format( Tiempo/len(IdE2) ))
+        if result[6] == 2:
+            print("El empleado ha llegado retrasado")
+    else:
+        print("El empleado no ha venido a trabajar")
